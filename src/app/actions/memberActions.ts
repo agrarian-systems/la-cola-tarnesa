@@ -2,7 +2,6 @@
 
 import { auth } from '@/auth';
 import { prisma } from '@/lib/prisma';
-import { user } from '@nextui-org/react';
 import { Photo } from '@prisma/client';
 
 export async function getMembers() {
@@ -30,19 +29,22 @@ export async function getMemberByUserId(userId: string) {
     });
   } catch (error) {
     console.log(error);
+    throw error;
   }
 }
 
 export async function getMemberPhotosByUserId(userId: string) {
-  const member = await prisma.member.findUnique({
-    where: { userId },
-    select: { photos: true },
-  });
-
-  if (!member) return null;
-
-  return member.photos.map((p) => p) as Photo[];
-
   try {
-  } catch (error) {}
+    const member = await prisma.member.findUnique({
+      where: { userId },
+      select: { photos: true },
+    });
+
+    if (!member) return null;
+
+    return member.photos.map((p) => p) as Photo[];
+  } catch (error) {
+    console.log(error);
+    throw error;
+  }
 }
