@@ -8,4 +8,14 @@ export const registerSchema = z.object({
     .min(6, { message: 'Lo mot de passa deu far 6 caractèrs al minim' }),
 });
 
-export type RegisterSchema = z.infer<typeof registerSchema>;
+export const profileSchema = z.object({
+  instrument: z.string(),
+  description: z.string(),
+  department: z.string(),
+});
+
+export const combinedRegisterSchema = registerSchema.and(profileSchema);
+
+export type RegisterSchema = z.infer<
+  typeof registerSchema & typeof profileSchema
+>;

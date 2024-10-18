@@ -1,8 +1,10 @@
 import { PrismaClient } from '@prisma/client';
 import { membersData } from './membersData';
 import { hash } from 'bcryptjs';
+import { casesData } from './casesData';
 
 const prisma = new PrismaClient();
+
 async function seedMembers() {
   return membersData.map(async (member) =>
     prisma.user.create({
@@ -15,14 +17,10 @@ async function seedMembers() {
         profileComplete: true,
         member: {
           create: {
-            dateOfBirth: new Date(member.dateOfBirth),
-            gender: member.gender,
             name: member.name,
             created: new Date(member.created),
             updated: new Date(member.lastActive),
             description: member.description,
-            city: member.city,
-            country: member.country,
             image: member.image,
             photos: {
               create: {
@@ -36,8 +34,22 @@ async function seedMembers() {
   );
 }
 
+async function seedConflitsCases() {
+  return casesData.map(async (c) =>
+    prisma.case.create({
+      data: {
+        name: c.name,
+        status: c.status,
+        createdAt: new Date(Date.now()),
+        updatedAt: new Date(Date.now()),
+      },
+    })
+  );
+}
+
 async function main() {
   await seedMembers();
+  await seedConflitsCases();
 }
 
 main()

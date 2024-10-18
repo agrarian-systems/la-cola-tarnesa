@@ -36,13 +36,13 @@ export default async function TopNav() {
         <NavbarBrand as={Link} href='/' className='text-white'>
           <GiAbstract074 size={40} className='mr-3' />
           <div className='font-bold text-2xl flex '>
-            <span> La còla tarnesa</span>
+            <span> Rai Disputa</span>
           </div>
         </NavbarBrand>
         <NavbarContent justify='center'>
-          <NavLink label='Membres' href='/members' />
-          <NavLink label='Listes' href='/lists' />
-          <NavLink label='Messages' href='/messages' />
+          <NavLink label='Members' href='/members' />
+          {/* <NavLink label='Listes' href='/lists' /> */}
+          <NavLink label='Cases' href='/cases' />
         </NavbarContent>
         <NavbarContent justify='end'>
           {session?.user ? (
@@ -55,7 +55,7 @@ export default async function TopNav() {
                 variant='bordered'
                 className='text-white'
               >
-                Connexion
+                Login
               </Button>
               <Button
                 as={Link}
@@ -63,7 +63,7 @@ export default async function TopNav() {
                 variant='bordered'
                 className='text-white'
               >
-                Créer un compte
+                Register
               </Button>
             </>
           )}

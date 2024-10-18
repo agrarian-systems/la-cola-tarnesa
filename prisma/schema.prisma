@@ -31,13 +31,16 @@ model Account {
 
   user User @relation(fields: [userId], references: [id], onDelete: Cascade)
 
+  caseId String?
+
   @@id([provider, providerAccountId])
 }
 
 model User {
   id              String    @id @default(cuid())
-  name            String?
   email           String    @unique
+  name            String?
+  gender          String?
   emailVerified   DateTime?
   passwordHash    String
   image           String?
@@ -52,14 +55,12 @@ model User {
 model Member {
   id          String   @id @default(cuid())
   userId      String   @unique
-  name        String
-  gender      String
-  dateOfBirth DateTime
+  name        String?
   created     DateTime @default(now())
   updated     DateTime @default(now())
-  description String
-  city        String
-  country     String
+  description String?
+  instrument  String?
+  department  String?
   image       String?
   user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   photos      Photo[]
@@ -102,4 +103,117 @@ model Token {
 enum TokenType {
   VERIFICATION
   PASSWORD_RESET
+}
+
+model Case {
+  id                       String                  @id @default(cuid())
+  name                     String
+  status                   ConflictStatusType
+  createdAt                DateTime                @default(now())
+  updatedAt                DateTime                @updatedAt
+  AreaType                 String
+  LandType                 String
+  LandLocation             String
+  SacredPlaces             Boolean
+  WaterSpring              Boolean
+  MainCrops                Crop[] // Transformer en relation n to n
+  ClanLinearity            String
+  yearStart                Int // Transformer en Date
+  DirectStakeholders       DirectStakeholderType[] // Transformer en relation n to n
+  OtherStakeholders        OtherStakeholderType[]
+  LegalStatusFarmersPOV    LegalStatusType
+  OwnershipProofFarmersPOV OwnershipProofType
+  ConflictHistory          String
+  ConflictArea             Decimal
+  ImpactedHouseholds       Int
+  ImpactedMen              Int
+  ImpactedWomen            Int
+  ImpactedKids             Int
+  ImpactedYouth            Int
+  ImpactedDisabled         Int
+  FuturePlans              FuturePlansType
+  GovtRespectsLaw          Boolean
+  PlannedCompensation      CompensationType
+  KSISupportStart          Int // Transformer en date
+  KSISupport               SupportType[]
+}
+
+enum SupportType {
+  CASE_STORY_COLLECTION
+  ADVOCACY
+  LEGAL_SUPPORT
+  ORGANIZING_FARMERS
+  SENSIBILIZATION
+}
+
+enum CompensationType {
+  PLANNED_NOT_PAID
+  PLANNED_PARTIALLY_PAID
+  PAID
+  NO
+  TO_BE_DEFINED
+}
+
+enum ConflictStatusType {
+  SOLVED
+  ONGOING_TRIBUNAL
+  ONGOING_NO_TRIBUNAL
+}
+
+enum OtherStakeholderType {
+  MUNICIPALITY
+  SUKU
+  ARMY
+  POLICE
+  NATIONAL_POLITICIANS
+  VETERANS
+  BROKERS
+}
+
+enum DirectStakeholderType {
+  BTW_HOUSEHOLDS
+  BTW_COMMUNITIES
+  BTW_COMMUNITY_AND_STATE
+  BTW_COMMUNITY_AND_PRIVATE_COMPANY
+  BTW_COMMUNITY_AND_FORMER_KING
+  BTW_COMMUNITY_AND_FORMER_LANDLORD
+  BTW_COMMUNITY_AND_VETERANS
+  BTW_COMMUNITY_AND_CHURCH
+}
+
+enum FuturePlansType {
+  HOUSING
+  ROADS
+  SCHOOL
+  HOSPITAL
+  LEASE_TO_PRIVATE_COMPANY
+  BUSINESS_CHANGE
+  BUSINESS_CONTINUE
+}
+
+enum LegalStatusType {
+  CUSTOMARY_LAND
+  COMMUNITY_LAND
+  COMMUNITY_PROTECTION_ZONE
+  PRIVATE_LAND
+  PUBLIC_DOMAIN
+}
+
+enum OwnershipProofType {
+  RECOGNISED_INHERITANCE
+  RIGHT_TO_USE_PORTUGUESE
+  RIGHT_TO_USE_INDONESIAN
+  LAND_TITLE_PORTUGUESE
+  LAND_TITLE_INDONESIAN
+  LAND_TITLE_TIMORESE
+  STATE_LAND
+  NONE
+}
+
+model Crop {
+  id   String @id @default(cuid())
+  name String
+
+  Case   Case?   @relation(fields: [caseId], references: [id])
+  caseId String?
 }
